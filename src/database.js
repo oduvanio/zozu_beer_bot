@@ -26,3 +26,51 @@ export async function upsertUser(supabaseUrl, supabaseKey, user) {
     console.log('Пользователь сохранен в БД:', user.id);
   }
 }
+
+// Сохраняем сообщение от пользователя
+export async function saveUserMessage(supabaseUrl, supabaseKey, userId, text) {
+  const url = `${supabaseUrl}/rest/v1/messages`;
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'apikey': supabaseKey,
+      'Authorization': `Bearer ${supabaseKey}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      user_id: userId,
+      text: text,
+      is_bot: false
+    })
+  });
+
+  if (!response.ok) {
+    console.error('Ошибка сохранения сообщения пользователя:', await response.text());
+  }
+}
+
+// Сохраняем ответ бота
+export async function saveBotMessage(supabaseUrl, supabaseKey, userId, text) {
+  const url = `${supabaseUrl}/rest/v1/messages`;
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'apikey': supabaseKey,
+      'Authorization': `Bearer ${supabaseKey}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      user_id: userId,
+      text: text,
+      is_bot: true
+    })
+  });
+
+  if (!response.ok) {
+    console.error('Ошибка сохранения ответа бота:', await response.text());
+  }
+}

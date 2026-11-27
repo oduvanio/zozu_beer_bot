@@ -1,6 +1,6 @@
 import { sendMessage } from './telegramApi.js';
 import { getBotReply } from './botLogic.js';
-import { upsertUser } from './database.js';
+import { upsertUser, saveUserMessage, saveBotMessage } from './database.js';
 
 export default {
   async fetch(request, env) {
@@ -15,14 +15,21 @@ export default {
       if (message && message.text && message.from) {
         const chatId = message.chat.id;
         const user = message.from;
+        const userText = message.text;
 
-        // 1. Сохраняем пользователя в БД (асинхронно, не блокируем ответ)
+        // 1. Сохраняем/обновляем пользователя
         await upsertUser(env.SUPABASE_URL, env.SUPABASE_KEY, user);
+
+        // 2. Сохраняем сообщение пользователя в историю
+        await saveUserMessage(env.SUPABASE_URL, env.SUPABASE_KEY, user.id, userText);
         
-        // 2. Генерируем ответ
+        // 3. Генерируем ответ
         const replyText = getBotReply(message.text);
+
+        // 4. Сохраняем ответ бота в историю
+        await saveBotMessage(env.SUPABASE_URL, env.SUPABASE_KEY, user.id, replyText);
         
-        // 2. Отправляем его через клиент Telegram
+        // 5. Отправляем ответ в Telegram
         await sendMessage(env.BOT_TOKEN, chatId, replyText);
       }
 
