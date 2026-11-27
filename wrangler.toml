@@ -1,0 +1,3 @@
+name = "zozu_beer_bot" # Должно ТОЧНО совпадать с именем Worker в панели Cloudflare
+main = "src/worker.js"       # Путь к файлу с кодом вашего бота
+compatibility_date = "2026-11-27"

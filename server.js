@@ -1,3 +1,4 @@
+// TODO: Этот код теперь не используется, он был для локальной сборки
 import Fasify from 'fastify';
 
 const app = Fasify( {logger: true });
