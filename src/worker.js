@@ -1,5 +1,5 @@
-import { sendMessage } from './src/telegramApi.js';
-import { getBotReply } from './src/botLogic.js';
+import { sendMessage } from './telegramApi.js';
+import { getBotReply } from './botLogic.js';
 
 export default {
   async fetch(request, env) {
